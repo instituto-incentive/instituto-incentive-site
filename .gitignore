@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+**/.env
+**/.env.*
+!.env.example
+!**/.env.example
+
+# Build outputs
+dist/
+build/
+coverage/
+**/dist/
+**/build/
+**/.next/
+**/out/
+*.tsbuildinfo
+
+# Runtime and generated files
+.git/
+.tmp/
+.npm-cache/
+*.log
+dev-server*.log
+test_output*.txt
+**/storage/
+materiais/**/chrome-profile*/
+git-meta-test/
+git-upload-meta/
+brand-manual-temp/
+instituto-incentive-site/
+materiais/identity_pdf_extract/
+**/.next-dev.pid
+next-env.d.ts
+
+# Workspace-only files. The site repository must not track the ERP.
+/instituto-platform/
+/materiais/construcao-modulo-a-modulo-institui-plus.md
+/materiais/divida-tecnica-sprint-00.md
+/materiais/documentacao-operacional.md
+/materiais/figma-rastreabilidade-sprint-00.md
+/materiais/matriz-estatutaria-instituto-incentive.md
+/materiais/matriz-estatutaria-oscs.md
+/materiais/plano-mvp-piloto-institui-plus.md
+/materiais/radar-esg-incentive/
+/materiais/roadmap-desenvolvimento-institui-plus.md
+
+# Tooling
+.vercel/
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
