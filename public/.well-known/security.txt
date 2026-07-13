@@ -1,0 +1,5 @@
+Contact: mailto:contato@institutoincentive.org.br
+Preferred-Languages: pt-BR
+Canonical: https://www.institutoincentive.org.br/.well-known/security.txt
+Policy: https://www.institutoincentive.org.br/privacidade
+Expires: 2027-07-13T23:59:59-03:00
