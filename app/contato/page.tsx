@@ -12,7 +12,6 @@ import {
   MapPin,
   MessageSquare,
   Phone,
-  Send,
 } from "lucide-react";
 
 const contacts = [
@@ -69,7 +68,7 @@ export default function ContactPage() {
             </h1>
             <p className="mt-6 text-lg leading-8 text-[var(--brand-muted)]">
               Use os canais abaixo para falar com o Instituto Incentive sobre projetos sociais e culturais,
-              qualificação profissional, Terceiro Setor, parcerias institucionais e oportunidades de colaboração.
+              qualifica????o profissional, Terceiro Setor, parcerias institucionais e oportunidades de colabora????o.
             </p>
 
             <div className="mt-8 grid gap-3">
@@ -102,7 +101,7 @@ export default function ContactPage() {
               <div className="flex items-start gap-4 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-4">
                 <MapPin className="mt-1 shrink-0 text-[var(--brand-teal)]" size={22} />
                 <div>
-                  <p className="text-xs font-bold uppercase text-[var(--brand-muted)]">Endereço público</p>
+                  <p className="text-xs font-bold uppercase text-[var(--brand-muted)]">Endere??o p??blico</p>
                   <p className="text-sm font-semibold leading-6 text-[var(--brand-text)] sm:text-base">
                     {siteConfig.address.line}
                   </p>
@@ -139,61 +138,18 @@ export default function ContactPage() {
 
           <div className="min-w-0 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-tint)] p-6 sm:p-8">
             <MessageSquare className="text-[var(--brand-teal)]" size={32} />
-            <h2 className="mt-4 text-2xl font-bold">Mensagem rápida</h2>
+            <h2 className="mt-4 text-2xl font-bold">Mensagem r??pida</h2>
             <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
-              Compartilhe seu contato, o tema da conversa e uma breve descrição da demanda.
+              Compartilhe seu contato, o tema da conversa e uma breve descri????o da demanda.
             </p>
 
-            <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
-              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-text)]">
-                Nome
-                <input
-                  name="name"
-                  className="rounded-lg border border-[var(--brand-border-strong)] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--brand-teal)]"
-                  placeholder="Seu nome"
-                  required
-                />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-text)]">
-                E-mail
-                <input
-                  name="email"
-                  className="rounded-lg border border-[var(--brand-border-strong)] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--brand-teal)]"
-                  placeholder="seuemail@exemplo.com"
-                  type="email"
-                  required
-                />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-text)]">
-                Assunto
-                <input
-                  name="subject"
-                  className="rounded-lg border border-[var(--brand-border-strong)] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--brand-teal)]"
-                  placeholder="Projetos, parceria ou apoio institucional"
-                  required
-                />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-text)]">
-                Mensagem
-                <textarea
-                  name="message"
-                  className="min-h-36 rounded-lg border border-[var(--brand-border-strong)] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--brand-teal)]"
-                  placeholder="Conte brevemente como podemos ajudar."
-                  required
-                />
-              </label>
-              <button
-                type="submit"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--brand-teal)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[var(--brand-teal-dark)] sm:w-auto"
-              >
-                Enviar mensagem
-                <Send size={17} />
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </div>
       </section>
       <PublicFooter />
     </main>
   );
+import { ContactForm } from "@/components/contact-form";
 }
+
