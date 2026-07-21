@@ -15,7 +15,8 @@ declare global {
           sitekey: string;
           callback: (token: string) => void;
           "expired-callback": () => void;
-          "error-callback": () => void;
+          "error-callback": (errorCode: string) => void;
+          "timeout-callback": () => void;
         },
       ) => string;
       reset: (widgetId?: string) => void;
@@ -34,6 +35,7 @@ export function ContactForm() {
   const [turnstileToken, setTurnstileToken] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [feedback, setFeedback] = useState("");
+  const [canRetryTurnstile, setCanRetryTurnstile] = useState(false);
 
   const renderTurnstile = useCallback(() => {
     if (!siteKey || !turnstileRef.current || !window.turnstile || widgetIdRef.current) {
@@ -42,11 +44,45 @@ export function ContactForm() {
 
     widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
       sitekey: siteKey,
-      callback: setTurnstileToken,
-      "expired-callback": () => setTurnstileToken(""),
-      "error-callback": () => setTurnstileToken(""),
+      callback: (token) => {
+        setTurnstileToken(token);
+        setCanRetryTurnstile(false);
+        setStatus("idle");
+        setFeedback("");
+      },
+      "expired-callback": () => {
+        setTurnstileToken("");
+        setCanRetryTurnstile(true);
+        setStatus("error");
+        setFeedback("A verifica\u00e7\u00e3o de seguran\u00e7a expirou. Tente novamente.");
+      },
+      "error-callback": (errorCode) => {
+        console.error("turnstile-error", errorCode);
+        setTurnstileToken("");
+        setCanRetryTurnstile(true);
+        setStatus("error");
+        setFeedback(
+          `N\u00e3o foi poss\u00edvel concluir a verifica\u00e7\u00e3o de seguran\u00e7a. C\u00f3digo: ${errorCode}.`,
+        );
+      },
+      "timeout-callback": () => {
+        setTurnstileToken("");
+        setCanRetryTurnstile(true);
+        setStatus("error");
+        setFeedback(
+          "A verifica\u00e7\u00e3o de seguran\u00e7a expirou por tempo. Tente novamente.",
+        );
+      },
     });
   }, []);
+
+  function resetTurnstile() {
+    window.turnstile?.reset(widgetIdRef.current);
+    setTurnstileToken("");
+    setCanRetryTurnstile(false);
+    setStatus("idle");
+    setFeedback("");
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -177,14 +213,24 @@ export function ContactForm() {
         </div>
 
         {feedback ? (
-          <p
-            role="status"
+          <div
             className={`rounded-2xl px-4 py-3 text-sm font-semibold ${
               status === "success" ? "bg-emerald-50 text-emerald-800" : "bg-red-50 text-red-800"
             }`}
           >
-            {feedback}
-          </p>
+            <p role="status" aria-live="polite">
+              {feedback}
+            </p>
+            {canRetryTurnstile ? (
+              <button
+                type="button"
+                onClick={resetTurnstile}
+                className="mt-2 underline underline-offset-4"
+              >
+                Tentar novamente
+              </button>
+            ) : null}
+          </div>
         ) : null}
 
         <button
