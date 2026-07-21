@@ -1,10 +1,10 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { ContactForm } from "@/components/contact-form";
 import { PublicFooter } from "@/components/layout/PublicFooter";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { trackSiteEvent } from "@/lib/analytics";
-import { buildMailto, siteConfig } from "@/lib/site-config";
+import { siteConfig } from "@/lib/site-config";
 import {
   ArrowUpRight,
   Globe,
@@ -12,7 +12,6 @@ import {
   MapPin,
   MessageSquare,
   Phone,
-  Send,
 } from "lucide-react";
 
 const contacts = [
@@ -37,25 +36,6 @@ const contacts = [
 ];
 
 export default function ContactPage() {
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const name = String(formData.get("name") || "").trim();
-    const email = String(formData.get("email") || "").trim();
-    const subject = String(formData.get("subject") || "Contato pelo site").trim();
-    const message = String(formData.get("message") || "").trim();
-    const body = [`Nome: ${name}`, `E-mail: ${email}`, "", "Mensagem:", message].join("\n");
-
-    trackSiteEvent("lead_form_submit", {
-      form: "contact",
-      channel: "email",
-      page: "contact",
-    });
-
-    window.location.href = buildMailto(subject, body);
-  }
-
   return (
     <main className="min-h-screen bg-[var(--brand-surface)] text-[var(--brand-text)]">
       <PublicHeader />
@@ -144,52 +124,7 @@ export default function ContactPage() {
               Compartilhe seu contato, o tema da conversa e uma breve descrição da demanda.
             </p>
 
-            <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
-              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-text)]">
-                Nome
-                <input
-                  name="name"
-                  className="rounded-lg border border-[var(--brand-border-strong)] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--brand-teal)]"
-                  placeholder="Seu nome"
-                  required
-                />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-text)]">
-                E-mail
-                <input
-                  name="email"
-                  className="rounded-lg border border-[var(--brand-border-strong)] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--brand-teal)]"
-                  placeholder="seuemail@exemplo.com"
-                  type="email"
-                  required
-                />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-text)]">
-                Assunto
-                <input
-                  name="subject"
-                  className="rounded-lg border border-[var(--brand-border-strong)] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--brand-teal)]"
-                  placeholder="Projetos, parceria ou apoio institucional"
-                  required
-                />
-              </label>
-              <label className="grid gap-2 text-sm font-semibold text-[var(--brand-text)]">
-                Mensagem
-                <textarea
-                  name="message"
-                  className="min-h-36 rounded-lg border border-[var(--brand-border-strong)] bg-white px-4 py-3 text-sm outline-none transition focus:border-[var(--brand-teal)]"
-                  placeholder="Conte brevemente como podemos ajudar."
-                  required
-                />
-              </label>
-              <button
-                type="submit"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--brand-teal)] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[var(--brand-teal-dark)] sm:w-auto"
-              >
-                Enviar mensagem
-                <Send size={17} />
-              </button>
-            </form>
+            <ContactForm />
           </div>
         </div>
       </section>

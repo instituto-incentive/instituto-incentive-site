@@ -1,311 +1,337 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { TrackedAnchor } from "@/components/analytics/TrackedAnchor";
-import {
-  ArrowLeft,
-  ArrowUpRight,
-  ClipboardList,
-  Download,
-  Mail,
-  TableProperties,
-} from "lucide-react";
-import { PublicFooter } from "@/components/layout/PublicFooter";
-import { PublicHeader } from "@/components/layout/PublicHeader";
-import { buildPageMetadata } from "@/lib/seo";
+﻿"use client";
 
-export const metadata: Metadata = buildPageMetadata({
-  title: "Emendas Parlamentares",
-  description:
-    "Posicao documental do Instituto Incentive sobre emendas parlamentares e transferencias especiais, com declaracoes anuais de 2020 a 2025.",
-  path: "/transparencia/emendas-parlamentares",
-});
+import { Download, ExternalLink, FileText, Filter, Info, Mail, Search, ShieldCheck } from "lucide-react";
+import { useMemo, useState } from "react";
 
-const summaryCards = [
+type EmendaRegistro = {
+  proponente: string;
+  parlamentar: string;
+  modalidade: string;
+  objeto: string;
+  orgaoConcedente: string;
+  instrumento: string;
+  emenda: string;
+  ano: number;
+  valor: string;
+  assinatura: string;
+  desembolso: string;
+  ultimoDesembolso: string;
+  situacao: string;
+  ultimaAtualizacao: string;
+  responsavel: string;
+};
+
+const registros: EmendaRegistro[] = [
   {
-    label: "Período de cobertura",
-    value: "2020-2025",
-    note: "Exercícios com posição anual documentada e publicada.",
+    proponente: "Instituto Incentive",
+    parlamentar: "Não se aplica",
+    modalidade: "Emenda parlamentar",
+    objeto: "Declaração institucional de inexistência de recebimento de emendas parlamentares no exercício de 2026.",
+    orgaoConcedente: "Não houve órgão concedente",
+    instrumento: "Sem instrumento",
+    emenda: "Sem emenda",
+    ano: 2026,
+    valor: "R$ 0,00",
+    assinatura: "Não se aplica",
+    desembolso: "R$ 0,00",
+    ultimoDesembolso: "Não se aplica",
+    situacao: "Não houve recebimento de emendas parlamentares",
+    ultimaAtualizacao: "19/06/2026",
+    responsavel: "Pedro Gerard de Souza Jucá - Diretor Executivo",
   },
   {
-    label: "Documentos anuais",
-    value: "6",
-    note: "Documentos anuais de inexistência de recebimento disponíveis para consulta.",
+    proponente: "Instituto Incentive",
+    parlamentar: "Não se aplica",
+    modalidade: "Emenda parlamentar",
+    objeto: "Declaração institucional de inexistência de recebimento de emendas parlamentares no exercício de 2025.",
+    orgaoConcedente: "Não houve órgão concedente",
+    instrumento: "Sem instrumento",
+    emenda: "Sem emenda",
+    ano: 2025,
+    valor: "R$ 0,00",
+    assinatura: "Não se aplica",
+    desembolso: "R$ 0,00",
+    ultimoDesembolso: "Não se aplica",
+    situacao: "Não houve recebimento de emendas parlamentares",
+    ultimaAtualizacao: "19/06/2026",
+    responsavel: "Pedro Gerard de Souza Jucá - Diretor Executivo",
   },
   {
-    label: "Situação atual",
-    value: "Sem recebimento",
-    note: "Não houve identificação de emendas parlamentares ou transferências especiais recebidas.",
+    proponente: "Instituto Incentive",
+    parlamentar: "Não se aplica",
+    modalidade: "Emenda parlamentar",
+    objeto: "Declaração institucional de inexistência de recebimento de emendas parlamentares no exercício de 2024.",
+    orgaoConcedente: "Não houve órgão concedente",
+    instrumento: "Sem instrumento",
+    emenda: "Sem emenda",
+    ano: 2024,
+    valor: "R$ 0,00",
+    assinatura: "Não se aplica",
+    desembolso: "R$ 0,00",
+    ultimoDesembolso: "Não se aplica",
+    situacao: "Não houve recebimento de emendas parlamentares",
+    ultimaAtualizacao: "19/06/2026",
+    responsavel: "Pedro Gerard de Souza Jucá - Diretor Executivo",
   },
 ];
 
-const annualDeclarations = [
-  {
-    year: "2020",
-    number: "001/2026",
-    href: "/documentos/transparencia/emendas-parlamentares/declaracao-inexistencia-emendas-2020.pdf",
-  },
-  {
-    year: "2021",
-    number: "002/2026",
-    href: "/documentos/transparencia/emendas-parlamentares/declaracao-inexistencia-emendas-2021.pdf",
-  },
-  {
-    year: "2022",
-    number: "003/2026",
-    href: "/documentos/transparencia/emendas-parlamentares/declaracao-inexistencia-emendas-2022.pdf",
-  },
-  {
-    year: "2023",
-    number: "004/2026",
-    href: "/documentos/transparencia/emendas-parlamentares/declaracao-inexistencia-emendas-2023.pdf",
-  },
-  {
-    year: "2024",
-    number: "005/2026",
-    href: "/documentos/transparencia/emendas-parlamentares/declaracao-inexistencia-emendas-2024.pdf",
-  },
-  {
-    year: "2025",
-    number: "006/2026",
-    href: "/documentos/transparencia/emendas-parlamentares/declaracao-inexistencia-emendas-2025.pdf",
-  },
-];
+const anos = Array.from(new Set(registros.map((registro) => registro.ano))).sort((a, b) => b - a);
+const situacoes = Array.from(new Set(registros.map((registro) => registro.situacao)));
 
-const amendmentRecords: Array<{
-  year: string;
-  source: string;
-  object: string;
-  received: string;
-  application: string;
-  status: string;
-}> = annualDeclarations.map((declaration) => ({
-  year: declaration.year,
-  source: "Não houve recebimento",
-  object: "—",
-  received: "R$ 0,00",
-  application: "Não aplicável",
-  status: "Declaração publicada",
-}));
+const normalize = (value: string) =>
+  value
+    .toLocaleLowerCase("pt-BR")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 
-export default function ParliamentaryAmendmentsPage() {
+const requestSubject = encodeURIComponent("Solicitação sobre emendas parlamentares");
+const requestBody = encodeURIComponent(
+  "Olá, gostaria de solicitar informações/documentos sobre a página de emendas parlamentares do Instituto Incentive.",
+);
+const requestHref = `mailto:contato@institutoincentive.org.br?subject=${requestSubject}&body=${requestBody}`;
+
+export default function EmendasParlamentaresPage() {
+  const [search, setSearch] = useState("");
+  const [selectedYear, setSelectedYear] = useState("todos");
+  const [selectedStatus, setSelectedStatus] = useState("todas");
+
+  const filteredRecords = useMemo(() => {
+    const term = normalize(search.trim());
+
+    return registros.filter((registro) => {
+      const matchesYear = selectedYear === "todos" || String(registro.ano) === selectedYear;
+      const matchesStatus = selectedStatus === "todas" || registro.situacao === selectedStatus;
+      const searchableText = normalize(Object.values(registro).join(" "));
+
+      return matchesYear && matchesStatus && (!term || searchableText.includes(term));
+    });
+  }, [search, selectedStatus, selectedYear]);
+
   return (
-    <main className="min-h-screen bg-[var(--brand-surface)] text-[var(--brand-text)]">
-      <PublicHeader />
-
-      <section id="conteudo-principal" className="border-b border-[var(--brand-border)] bg-white">
-        <div className="mx-auto w-full max-w-7xl px-5 py-14 sm:px-8">
-          <Link
-            href="/transparencia"
-            className="inline-flex items-center gap-2 text-sm font-bold text-[var(--brand-teal)] transition hover:text-[var(--brand-teal-dark)]"
-          >
-            <ArrowLeft size={17} />
-            Voltar para Transparência
-          </Link>
-
-          <div className="mt-8 grid w-full gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-            <div className="min-w-0">
-              <p className="text-sm font-semibold uppercase text-[var(--brand-orange-dark)]">
-                Emendas Parlamentares
-              </p>
-              <h1 className="mt-3 text-4xl font-bold leading-tight sm:text-5xl">
-                Declarações anuais sobre emendas parlamentares e transferências especiais.
-              </h1>
-            </div>
-            <div className="min-w-0 space-y-5 text-base leading-8 text-[var(--brand-muted)]">
-              <p>
-                O Instituto Incentive publica nesta seção as declarações anuais referentes ao recebimento de emendas
-                parlamentares e transferências especiais nos exercícios de 2020 a 2025.
-              </p>
-              <p className="rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-4 text-sm font-semibold leading-6 text-[var(--brand-text)]">
-                Para o período informado, não houve recebimento de recursos dessa natureza pelo CNPJ do Instituto.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b border-[var(--brand-border)] bg-[var(--brand-surface)]">
-        <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
-          <div className="grid w-full gap-5 md:grid-cols-3">
-            {summaryCards.map((card) => (
-              <article key={card.label} className="rounded-lg border border-[var(--brand-border)] bg-white p-5 shadow-sm">
-                <p className="text-sm font-bold uppercase text-[var(--brand-orange-dark)]">{card.label}</p>
-                <p className="mt-3 text-3xl font-bold text-[var(--brand-teal)]">{card.value}</p>
-                <p className="mt-3 text-sm leading-6 text-[var(--brand-muted)]">{card.note}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b border-[var(--brand-border)] bg-white">
-        <div className="mx-auto max-w-7xl px-5 py-10 sm:px-8">
-          <div className="rounded-lg border border-[var(--brand-border-strong)] bg-[var(--brand-tint)] p-6 shadow-sm">
-            <p className="text-sm font-semibold uppercase text-[var(--brand-orange-dark)]">Aviso de Transparência</p>
-            <h2 className="mt-3 text-2xl font-bold text-[var(--brand-text)]">
-              Inexistência de recebimento declarada para 2020 a 2025.
-            </h2>
-            <div className="mt-4 space-y-4 text-sm leading-7 text-[var(--brand-muted)]">
-              <p>
-                Até a presente data, o Instituto Incentive de Inovação, Desenvolvimento e Transformação Social não
-                recebeu recursos oriundos de emendas parlamentares ou transferências especiais (Emendas PIX) nos
-                exercícios de 2020 a 2025, conforme declarações anuais publicadas nesta seção.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-white">
-        <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
-          <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-            <div className="min-w-0 max-w-3xl">
-              <p className="text-sm font-semibold uppercase text-[var(--brand-orange-dark)]">Tabela pública</p>
-              <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Recebimento de emendas por exercício.</h2>
-              <p className="mt-4 text-base leading-8 text-[var(--brand-muted)]">
-                Nos exercícios de 2020 a 2025, o valor recebido foi R$ 0,00, conforme declarações anuais disponibilizadas
-                em PDF.
-              </p>
-            </div>
-            <span className="inline-flex w-fit items-center gap-2 rounded-lg bg-[var(--brand-tint)] px-4 py-3 text-sm font-bold text-[var(--brand-teal)]">
-              <TableProperties size={18} />
-              Documentos em PDF
+    <main className="bg-slate-50 text-slate-950">
+      <section className="bg-[#004f4f] px-6 py-16 text-white md:px-10">
+        <div className="mx-auto flex max-w-7xl flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl space-y-5">
+            <span className="inline-flex w-fit items-center gap-2 rounded-full border border-white/25 bg-white/10 px-4 py-2 text-sm font-bold">
+              <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+              Transparência institucional
             </span>
+            <div className="space-y-4">
+              <h1 className="text-4xl font-black leading-tight md:text-6xl">Emendas parlamentares</h1>
+              <p className="max-w-2xl text-lg leading-8 text-white/85">
+                Consulte a situação dos recursos de emendas parlamentares, instrumentos, valores, desembolsos e documentos de referência do Instituto Incentive.
+              </p>
+            </div>
           </div>
 
-          <div className="mt-8 w-full overflow-hidden rounded-lg border border-[var(--brand-border)]">
-            <div className="overflow-x-auto">
-              <table className="min-w-[960px] w-full border-collapse bg-white text-left text-sm">
-                <thead className="bg-[var(--brand-tint)] text-xs uppercase text-[var(--brand-teal)]">
+          <div className="grid gap-3 rounded-lg border border-white/20 bg-white/10 p-5 text-sm text-white/90 md:min-w-80">
+            <div className="flex items-start gap-3">
+              <Info className="mt-1 h-5 w-5 shrink-0 text-amber-300" aria-hidden="true" />
+              <p>
+                Atualmente, os registros publicados indicam inexistência de recebimento de emendas parlamentares nos exercícios listados.
+              </p>
+            </div>
+            <a className="inline-flex items-center gap-2 font-bold text-amber-200 underline-offset-4 hover:underline" href={requestHref}>
+              Solicitar informações complementares <Mail className="h-4 w-4" aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-10 md:px-10">
+        <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-4">
+          {[
+            ["Total recebido", "R$ 0,00"],
+            ["Registros publicados", String(registros.length)],
+            ["Anos cobertos", `${anos[anos.length - 1]}-${anos[0]}`],
+            ["Última atualização", "19/06/2026"],
+          ].map(([label, value]) => (
+            <div key={label} className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+              <p className="text-sm font-bold uppercase tracking-wide text-slate-500">{label}</p>
+              <p className="mt-2 text-2xl font-black text-[#004f4f]">{value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="px-6 pb-16 md:px-10">
+        <div className="mx-auto max-w-7xl space-y-6">
+          <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-center gap-2 text-sm font-black uppercase tracking-wide text-[#004f4f]">
+              <Filter className="h-4 w-4" aria-hidden="true" />
+              Filtrar registros
+            </div>
+            <div className="grid gap-3 lg:grid-cols-[1fr_220px_320px_auto]">
+              <label className="relative block">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+                <span className="sr-only">Pesquisar</span>
+                <input
+                  className="h-12 w-full rounded-md border border-slate-300 bg-white pl-10 pr-3 text-sm outline-none ring-[#008080]/20 transition focus:border-[#008080] focus:ring-4"
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Buscar por órgão, objeto, instrumento ou situação"
+                  value={search}
+                />
+              </label>
+
+              <label className="block">
+                <span className="sr-only">Ano</span>
+                <select
+                  className="h-12 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-bold outline-none ring-[#008080]/20 transition focus:border-[#008080] focus:ring-4"
+                  onChange={(event) => setSelectedYear(event.target.value)}
+                  value={selectedYear}
+                >
+                  <option value="todos">Todos os anos</option>
+                  {anos.map((ano) => (
+                    <option key={ano} value={ano}>
+                      {ano}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="block">
+                <span className="sr-only">Situação</span>
+                <select
+                  className="h-12 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-bold outline-none ring-[#008080]/20 transition focus:border-[#008080] focus:ring-4"
+                  onChange={(event) => setSelectedStatus(event.target.value)}
+                  value={selectedStatus}
+                >
+                  <option value="todas">Todas as situações</option>
+                  {situacoes.map((situacao) => (
+                    <option key={situacao} value={situacao}>
+                      {situacao}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <button
+                className="h-12 rounded-md bg-[#004f4f] px-5 text-sm font-black text-white transition hover:bg-[#006b6b]"
+                onClick={() => {
+                  setSearch("");
+                  setSelectedYear("todos");
+                  setSelectedStatus("todas");
+                }}
+                type="button"
+              >
+                Limpar filtro
+              </button>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+            <div className="hidden overflow-x-auto xl:block">
+              <table className="min-w-[1280px] border-collapse text-left text-sm">
+                <thead className="bg-[#00639a] text-xs font-black uppercase tracking-wide text-white">
                   <tr>
-                    <th className="px-4 py-4 font-bold">Ano</th>
-                    <th className="px-4 py-4 font-bold">Fonte/Instrumento</th>
-                    <th className="px-4 py-4 font-bold">Objeto</th>
-                    <th className="px-4 py-4 font-bold">Valor recebido</th>
-                    <th className="px-4 py-4 font-bold">Aplicação</th>
-                    <th className="px-4 py-4 font-bold">Status</th>
+                    {[
+                      "Proponente",
+                      "Parlamentar",
+                      "Modalidade",
+                      "Objeto",
+                      "Órgão concedente",
+                      "Nº instrumento",
+                      "Nº emenda",
+                      "Ano",
+                      "Valor emenda",
+                      "Data assinatura",
+                      "Desembolso até momento",
+                      "Data último desembolso",
+                      "Situação",
+                      "Arquivo",
+                    ].map((header) => (
+                      <th key={header} className="border-r border-white/20 px-4 py-4 align-top last:border-r-0">
+                        {header}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {amendmentRecords.length > 0 ? (
-                    amendmentRecords.map((record) => (
-                      <tr key={`${record.year}-${record.source}`} className="border-t border-[var(--brand-border)]">
-                        <td className="px-4 py-4 font-semibold">{record.year}</td>
-                        <td className="px-4 py-4">{record.source}</td>
-                        <td className="px-4 py-4">{record.object}</td>
-                        <td className="px-4 py-4 font-semibold">{record.received}</td>
-                        <td className="px-4 py-4">{record.application}</td>
-                        <td className="px-4 py-4">{record.status}</td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr className="border-t border-[var(--brand-border)]">
-                      <td colSpan={6} className="px-4 py-10 text-center">
-                        <ClipboardList className="mx-auto text-[var(--brand-teal)]" size={36} />
-                        <p className="mt-4 text-lg font-bold text-[var(--brand-text)]">
-                          Não houve recebimento declarado para o período informado.
-                        </p>
-                        <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-[var(--brand-muted)]">
-                          A inexistência de recebimento foi formalizada por meio de declarações anuais.
-                        </p>
+                  {filteredRecords.map((registro) => (
+                    <tr key={registro.ano} className="border-t border-slate-200 odd:bg-slate-50/70">
+                      <td className="px-4 py-4 font-bold text-[#004f4f]">{registro.proponente}</td>
+                      <td className="px-4 py-4">{registro.parlamentar}</td>
+                      <td className="px-4 py-4">{registro.modalidade}</td>
+                      <td className="max-w-md px-4 py-4 leading-6">{registro.objeto}</td>
+                      <td className="px-4 py-4">{registro.orgaoConcedente}</td>
+                      <td className="px-4 py-4">{registro.instrumento}</td>
+                      <td className="px-4 py-4">{registro.emenda}</td>
+                      <td className="px-4 py-4 font-bold">{registro.ano}</td>
+                      <td className="px-4 py-4 font-bold">{registro.valor}</td>
+                      <td className="px-4 py-4">{registro.assinatura}</td>
+                      <td className="px-4 py-4 font-bold">{registro.desembolso}</td>
+                      <td className="px-4 py-4">{registro.ultimoDesembolso}</td>
+                      <td className="px-4 py-4 text-[#004f4f]">{registro.situacao}</td>
+                      <td className="px-4 py-4">
+                        <a className="inline-flex items-center gap-2 font-bold text-[#00639a] hover:underline" href={requestHref}>
+                          Solicitar <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                        </a>
                       </td>
                     </tr>
-                  )}
+                  ))}
                 </tbody>
               </table>
+            </div>
+
+            <div className="grid gap-4 p-4 xl:hidden">
+              {filteredRecords.map((registro) => (
+                <article key={registro.ano} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-xs font-black uppercase tracking-wide text-slate-500">{registro.ano}</p>
+                      <h2 className="mt-1 text-lg font-black text-[#004f4f]">{registro.modalidade}</h2>
+                    </div>
+                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-800">{registro.valor}</span>
+                  </div>
+                  <p className="mt-4 text-sm leading-6 text-slate-700">{registro.objeto}</p>
+                  <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+                    <div>
+                      <dt className="font-black text-slate-500">Situação</dt>
+                      <dd>{registro.situacao}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-black text-slate-500">Órgão concedente</dt>
+                      <dd>{registro.orgaoConcedente}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-black text-slate-500">Última atualização</dt>
+                      <dd>{registro.ultimaAtualizacao}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-black text-slate-500">Responsável</dt>
+                      <dd>{registro.responsavel}</dd>
+                    </div>
+                  </dl>
+                  <a className="mt-4 inline-flex items-center gap-2 rounded-md bg-[#004f4f] px-4 py-3 text-sm font-black text-white" href={requestHref}>
+                    Solicitar documento <Download className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                </article>
+              ))}
+            </div>
+
+            {filteredRecords.length === 0 ? (
+              <div className="flex flex-col items-center gap-3 px-6 py-14 text-center text-slate-600">
+                <FileText className="h-10 w-10 text-slate-400" aria-hidden="true" />
+                <p className="font-bold">Nenhum registro encontrado para os filtros selecionados.</p>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="rounded-lg border border-[#004f4f]/20 bg-[#004f4f] p-6 text-white">
+            <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+              <div>
+                <h2 className="text-2xl font-black">Solicitação de informações</h2>
+                <p className="mt-2 max-w-3xl text-sm leading-6 text-white/85">
+                  Pedidos, correções ou complementações sobre emendas parlamentares podem ser encaminhados ao canal oficial do Instituto Incentive.
+                </p>
+              </div>
+              <a className="inline-flex items-center justify-center gap-2 rounded-md bg-white px-5 py-3 text-sm font-black text-[#004f4f] transition hover:bg-amber-100" href={requestHref}>
+                contato@institutoincentive.org.br <Mail className="h-4 w-4" aria-hidden="true" />
+              </a>
             </div>
           </div>
         </div>
       </section>
-
-      <section className="border-y border-[var(--brand-border)] bg-[var(--brand-surface)]">
-        <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8">
-          <div className="min-w-0 max-w-3xl">
-            <p className="text-sm font-semibold uppercase text-[var(--brand-orange-dark)]">Cobertura anual</p>
-            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Declarações anuais disponíveis para consulta.</h2>
-            <p className="mt-4 text-base leading-8 text-[var(--brand-muted)]">
-              Cada documento formaliza a inexistência de recebimento de emendas parlamentares ou transferências
-              especiais pelo Instituto Incentive no respectivo exercício.
-            </p>
-          </div>
-
-          <div className="mt-10 grid w-full gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {annualDeclarations.map((declaration) => (
-              <article key={declaration.year} className="min-w-0 rounded-lg border border-[var(--brand-border)] bg-white p-5 shadow-sm">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <p className="text-3xl font-bold text-[var(--brand-teal)]">{declaration.year}</p>
-                    <p className="mt-2 text-sm font-bold text-[var(--brand-text)]">
-                      Declaração nº {declaration.number}
-                    </p>
-                  </div>
-                  <span className="rounded-lg bg-[var(--brand-tint)] px-3 py-2 text-xs font-bold text-[var(--brand-teal)]">
-                    Publicada
-                  </span>
-                </div>
-                <div className="mt-5 space-y-3 text-sm leading-6 text-[var(--brand-muted)]">
-                  <p>
-                    <strong className="text-[var(--brand-text)]">Situação:</strong> Não houve recebimento de emendas
-                    parlamentares.
-                  </p>
-                  <p>
-                    <strong className="text-[var(--brand-text)]">Última atualização:</strong> 19/06/2026
-                  </p>
-                  <p>
-                    <strong className="text-[var(--brand-text)]">Responsável:</strong> Pedro Gerard de Souza Jucá -
-                    Diretor Executivo
-                  </p>
-                </div>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <TrackedAnchor
-                    href={declaration.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    eventName="document_open"
-                    eventProperties={{ area: "parliamentary_amendments", year: declaration.year, document: declaration.number }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[var(--brand-teal)] px-4 py-3 text-sm font-bold text-white transition hover:bg-[var(--brand-teal-dark)] sm:w-auto"
-                  >
-                    Visualizar PDF
-                    <ArrowUpRight size={16} />
-                  </TrackedAnchor>
-                  <TrackedAnchor
-                    href={declaration.href}
-                    download
-                    eventName="document_download"
-                    eventProperties={{ area: "parliamentary_amendments", year: declaration.year, document: declaration.number }}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[var(--brand-border-strong)] bg-white px-4 py-3 text-sm font-bold text-[var(--brand-text)] transition hover:border-[var(--brand-teal)] hover:text-[var(--brand-teal)] sm:w-auto"
-                  >
-                    Baixar PDF
-                    <Download size={16} />
-                  </TrackedAnchor>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[var(--brand-text)] text-white">
-        <div className="mx-auto grid w-full max-w-7xl gap-8 px-5 py-12 sm:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div className="min-w-0">
-            <h2 className="text-2xl font-bold">Solicitação de informações</h2>
-            <p className="mt-3 text-sm leading-6 text-[var(--brand-light-text)]">
-              Pedidos, correções ou complementações sobre emendas parlamentares podem ser encaminhados ao canal oficial.
-            </p>
-          </div>
-          <TrackedAnchor
-            href="mailto:contato@institutoincentive.org.br?subject=Solicita%C3%A7%C3%A3o%20sobre%20emendas%20parlamentares"
-            eventName="contact_channel_click"
-            eventProperties={{ channel: "email", page: "parliamentary_amendments" }}
-            className="flex items-center gap-4 rounded-lg border border-white/15 bg-white/10 p-4 text-white transition hover:bg-white/15"
-          >
-            <Mail className="shrink-0 text-[var(--brand-orange-light)]" size={22} />
-            <span className="break-all text-sm font-semibold sm:text-base">contato@institutoincentive.org.br</span>
-          </TrackedAnchor>
-        </div>
-      </section>
-
-      <PublicFooter />
     </main>
   );
 }
