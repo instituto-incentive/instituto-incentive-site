@@ -1,10 +1,10 @@
 "use client";
 
-import type { FormEvent } from "react";
+import { ContactForm } from "@/components/contact-form";
 import { PublicFooter } from "@/components/layout/PublicFooter";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { trackSiteEvent } from "@/lib/analytics";
-import { buildMailto, siteConfig } from "@/lib/site-config";
+import { siteConfig } from "@/lib/site-config";
 import {
   ArrowUpRight,
   Globe,
@@ -36,25 +36,6 @@ const contacts = [
 ];
 
 export default function ContactPage() {
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-
-    const formData = new FormData(event.currentTarget);
-    const name = String(formData.get("name") || "").trim();
-    const email = String(formData.get("email") || "").trim();
-    const subject = String(formData.get("subject") || "Contato pelo site").trim();
-    const message = String(formData.get("message") || "").trim();
-    const body = [`Nome: ${name}`, `E-mail: ${email}`, "", "Mensagem:", message].join("\n");
-
-    trackSiteEvent("lead_form_submit", {
-      form: "contact",
-      channel: "email",
-      page: "contact",
-    });
-
-    window.location.href = buildMailto(subject, body);
-  }
-
   return (
     <main className="min-h-screen bg-[var(--brand-surface)] text-[var(--brand-text)]">
       <PublicHeader />
@@ -68,7 +49,7 @@ export default function ContactPage() {
             </h1>
             <p className="mt-6 text-lg leading-8 text-[var(--brand-muted)]">
               Use os canais abaixo para falar com o Instituto Incentive sobre projetos sociais e culturais,
-              qualifica????o profissional, Terceiro Setor, parcerias institucionais e oportunidades de colabora????o.
+              qualificação profissional, Terceiro Setor, parcerias institucionais e oportunidades de colaboração.
             </p>
 
             <div className="mt-8 grid gap-3">
@@ -101,7 +82,7 @@ export default function ContactPage() {
               <div className="flex items-start gap-4 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-4">
                 <MapPin className="mt-1 shrink-0 text-[var(--brand-teal)]" size={22} />
                 <div>
-                  <p className="text-xs font-bold uppercase text-[var(--brand-muted)]">Endere??o p??blico</p>
+                  <p className="text-xs font-bold uppercase text-[var(--brand-muted)]">Endereço público</p>
                   <p className="text-sm font-semibold leading-6 text-[var(--brand-text)] sm:text-base">
                     {siteConfig.address.line}
                   </p>
@@ -138,9 +119,9 @@ export default function ContactPage() {
 
           <div className="min-w-0 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-tint)] p-6 sm:p-8">
             <MessageSquare className="text-[var(--brand-teal)]" size={32} />
-            <h2 className="mt-4 text-2xl font-bold">Mensagem r??pida</h2>
+            <h2 className="mt-4 text-2xl font-bold">Mensagem rápida</h2>
             <p className="mt-2 text-sm leading-6 text-[var(--brand-muted)]">
-              Compartilhe seu contato, o tema da conversa e uma breve descri????o da demanda.
+              Compartilhe seu contato, o tema da conversa e uma breve descrição da demanda.
             </p>
 
             <ContactForm />
@@ -150,6 +131,4 @@ export default function ContactPage() {
       <PublicFooter />
     </main>
   );
-import { ContactForm } from "@/components/contact-form";
 }
-

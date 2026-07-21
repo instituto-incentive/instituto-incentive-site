@@ -20,7 +20,7 @@ declare global {
       ) => string;
       reset: (widgetId?: string) => void;
     };
-    dataLayer?: Array<Record<string, unknown>>;
+    dataLayer?: unknown[];
   }
 }
 
