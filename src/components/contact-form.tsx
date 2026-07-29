@@ -144,7 +144,16 @@ export function ContactForm() {
     setFeedback("Mensagem enviada com sucesso. O Instituto Incentive recebeu seu contato.");
   }
 
-  const isDisabled = status === "sending" || !siteKey;
+  const isAwaitingTurnstile = Boolean(siteKey) && !turnstileToken && status === "idle";
+  const isDisabled = status === "sending" || !siteKey || !turnstileToken;
+  const buttonLabel =
+    status === "sending"
+      ? "Enviando mensagem\u2026"
+      : !siteKey
+        ? "Formul\u00e1rio temporariamente indispon\u00edvel"
+        : !turnstileToken
+          ? "Aguardando verifica\u00e7\u00e3o de seguran\u00e7a\u2026"
+          : "Enviar mensagem";
 
   return (
     <>
@@ -207,10 +216,20 @@ export function ContactForm() {
             <div ref={turnstileRef} />
           ) : (
             <p className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900">
-              Protecao antispam pendente de ativacao na Vercel.
+              {"Formul\u00e1rio temporariamente indispon\u00edvel."}
             </p>
           )}
         </div>
+
+        {isAwaitingTurnstile ? (
+          <p
+            role="status"
+            aria-live="polite"
+            className="rounded-2xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-800"
+          >
+            {"Verifica\u00e7\u00e3o de seguran\u00e7a em andamento. Aguarde alguns segundos."}
+          </p>
+        ) : null}
 
         {feedback ? (
           <div
@@ -236,9 +255,9 @@ export function ContactForm() {
         <button
           type="submit"
           disabled={isDisabled}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-incentive-700 px-6 py-4 text-sm font-extrabold text-white shadow-soft transition hover:bg-incentive-800 disabled:cursor-not-allowed disabled:opacity-60"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#006d73] px-5 py-3 text-sm font-semibold text-white shadow-soft transition hover:bg-[#00565b] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#004b50] disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-700 disabled:opacity-100"
         >
-          {status === "sending" ? "Enviando..." : "Enviar mensagem"}
+          {buttonLabel}
           <Send aria-hidden className="h-4 w-4" />
         </button>
       </form>
