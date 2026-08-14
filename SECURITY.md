@@ -41,7 +41,8 @@ Nao estao no escopo deste repositorio:
 - HTTPS gerenciado pela Vercel.
 - Redirecionamento do dominio raiz para `www.institutoincentive.org.br`.
 - Headers basicos de seguranca no Next.js: HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `Cross-Origin-Opener-Policy` e CSP basica.
-- Sem formularios com persistencia em servidor; o contato usa `mailto:`.
+- Formulario de contato com validacao no servidor, Cloudflare Turnstile e envio pelo Resend.
+- Sem persistencia de mensagens ou dados de contato na aplicacao; o envio e encaminhado ao canal institucional configurado.
 - Sem credenciais no codigo-fonte.
 - Dependabot para npm e GitHub Actions.
 - Validacao por `npm run lint` e `npm run build`.
