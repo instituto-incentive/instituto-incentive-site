@@ -84,12 +84,6 @@ export async function POST(request: Request) {
     const to = process.env.CONTACT_TO_EMAIL || "contato@institutoincentive.org.br";
 
     if (!turnstileSecret || !resendApiKey || !from) {
-      console.error("contact-config-missing", {
-        turnstileSecretKeyPresent: Boolean(turnstileSecret),
-        resendApiKeyPresent: Boolean(resendApiKey),
-        contactFromEmailPresent: Boolean(from),
-      });
-
       return NextResponse.json(
         { message: "Formulario temporariamente indisponivel." },
         { status: 500 },

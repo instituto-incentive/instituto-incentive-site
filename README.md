@@ -19,7 +19,7 @@ O sistema de gestao/ERP INSTITUI+ fica fora da raiz publica deste site.
 Nao misturar arquivos de ERP, API, banco de dados ou modulo administrativo nesta base.
 
 ```text
-Repositorio atual: https://github.com/PedroGerard/institui-platform
+Repositorio oficial: https://github.com/instituto-incentive/instituto-incentive-site
 Raiz ativa do site: /
 ```
 
@@ -89,6 +89,13 @@ Este site nao possui banco de dados, login proprio, painel administrativo public
 - fluxo de publicacao com branch, validacao, pull request e deploy monitorado.
 
 Detalhes: [SECURITY.md](SECURITY.md).
+
+## Formulario de contato
+
+O formulario publico em `/contato` valida os campos no servidor, exige a verificacao
+Cloudflare Turnstile e encaminha a mensagem pelo Resend. As credenciais dessas
+integracoes permanecem exclusivamente nas variaveis de ambiente da Vercel e nao
+devem ser registradas no codigo-fonte ou em documentos do repositorio.
 
 ## Observacao importante
 

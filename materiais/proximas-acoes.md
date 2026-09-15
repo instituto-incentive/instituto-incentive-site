@@ -1,6 +1,6 @@
 # Proximas acoes - Instituto Incentive
 
-Atualizado em 06 de julho de 2026.
+Atualizado em 14 de agosto de 2026.
 
 ## Concluido
 
@@ -14,6 +14,8 @@ Atualizado em 06 de julho de 2026.
 - Consentimento de cookies criado para ativar ferramentas opcionais somente apos aceite.
 - Headers basicos de seguranca configurados no Next.js.
 - Dependabot preparado para monitorar dependencias npm e GitHub Actions.
+- Formulario de contato publicado com validacao no servidor, Cloudflare Turnstile e envio pelo Resend.
+- Fluxo de contato validado manualmente em producao, incluindo a entrega na caixa institucional.
 
 ## Prioridade 1 - Google e mensuracao
 
@@ -35,6 +37,7 @@ Atualizado em 06 de julho de 2026.
 - Salvar backup externo dos documentos publicos e materiais editoriais.
 - Monitorar disponibilidade do dominio oficial com UptimeRobot, Better Stack ou ferramenta equivalente.
 - Proteger a branch `main` quando o plano do GitHub permitir branch protection em repositorio privado.
+- Manter a chave anterior do Resend apenas pelo periodo de confirmacao definido pela instituicao e revoga-la em etapa controlada.
 
 ## Prioridade 2 - Conteudo e experiencia
 
@@ -68,3 +71,4 @@ Atualizado em 06 de julho de 2026.
 4. Enviar commit ao GitHub.
 5. Acompanhar deploy na Vercel.
 6. Testar `https://www.institutoincentive.org.br`.
+7. Quando a alteracao envolver o formulario, realizar um envio manual legitimo apos o deploy e confirmar somente o recebimento institucional.
