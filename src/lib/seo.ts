@@ -36,6 +36,7 @@ export const publicSitemapRoutes = [
   { path: "/transparencia/emendas-parlamentares", priority: 0.9, changeFrequency: "monthly" },
   { path: "/contato", priority: 0.75, changeFrequency: "monthly" },
   { path: "/privacidade", priority: 0.55, changeFrequency: "yearly" },
+  { path: "/termos-de-uso", priority: 0.55, changeFrequency: "yearly" },
   { path: "/acessibilidade", priority: 0.55, changeFrequency: "yearly" },
 ] as const;
 

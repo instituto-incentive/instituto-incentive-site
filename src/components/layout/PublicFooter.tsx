@@ -32,6 +32,7 @@ const transparencyLinks = [
 
 const legalLinks = [
   { href: "/privacidade", label: "Política de Privacidade" },
+  { href: "/termos-de-uso", label: "Termos de Uso" },
   { href: "/acessibilidade", label: "Acessibilidade" },
   { href: "/transparencia", label: "Transparência" },
   { href: "/contato", label: "Contato" },

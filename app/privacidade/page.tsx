@@ -1,62 +1,53 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowRight,
-  CheckCircle2,
-  FileText,
-  LockKeyhole,
-  Mail,
-  ShieldCheck,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, FileText, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
 import { PublicFooter } from "@/components/layout/PublicFooter";
 import { PublicHeader } from "@/components/layout/PublicHeader";
 import { buildPageMetadata } from "@/lib/seo";
+import { siteConfig } from "@/lib/site-config";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Politica de Privacidade",
+  title: "Política de Privacidade",
   description:
-    "Politica de privacidade do Instituto Incentive, com orientacoes sobre contato, finalidade institucional, transparencia e direitos dos titulares.",
+    "Política de Privacidade do Instituto Incentive: como tratamos dados de contato, segurança, cookies e solicitações de titulares.",
   path: "/privacidade",
 });
 
 const privacyTopics = [
   {
     title: "Dados de contato",
-    text: "Quando uma pessoa envia mensagem ao Instituto, podemos tratar nome, e-mail, telefone, assunto e conteúdo informado voluntariamente.",
+    text: "No formulário, são informados nome, e-mail, assunto e mensagem. Esses dados são enviados voluntariamente por quem entra em contato.",
   },
   {
-    title: "Finalidade institucional",
-    text: "As informações são utilizadas para responder solicitações, organizar relacionamentos institucionais, registrar demandas e apoiar a comunicação com parceiros e comunidade.",
+    title: "Finalidades",
+    text: "Usamos essas informações para responder demandas, encaminhar contatos institucionais e manter o histórico necessário ao atendimento.",
   },
   {
-    title: "Transparência e prestação de contas",
-    text: "Documentos públicos podem ser divulgados no site quando necessários para governança, cumprimento legal, controle social e publicidade institucional.",
+    title: "Segurança do formulário",
+    text: "O formulário utiliza o Cloudflare Turnstile para reduzir envios automatizados e abuso dos canais de contato.",
   },
   {
-    title: "Segurança e acesso",
-    text: "O Instituto restringe o acesso às informações pessoais a pessoas autorizadas e mantém práticas de cuidado documental compatíveis com sua atuação.",
+    title: "Transparência",
+    text: "Documentos são publicados quando houver finalidade institucional ou obrigação aplicável, com revisão de privacidade antes da divulgação.",
   },
 ];
 
 const rights = [
-  "Solicitar informação sobre o tratamento de seus dados pessoais.",
-  "Pedir correção de dados incompletos, inexatos ou desatualizados.",
-  "Solicitar exclusão ou revisão de informações quando aplicável.",
-  "Entrar em contato para dúvidas sobre privacidade e proteção de dados.",
+  "Confirmar a existência de tratamento de dados pessoais.",
+  "Solicitar acesso e correção de dados incompletos, inexatos ou desatualizados.",
+  "Solicitar informações sobre compartilhamento, quando aplicável.",
+  "Solicitar eliminação, bloqueio ou revisão quando cabível, observadas as obrigações legais de guarda.",
+  "Revogar consentimento quando esta for a base aplicável ao tratamento.",
 ];
 
-const cookieUses = [
-  "Medir acessos, páginas mais visitadas e desempenho técnico do site.",
-  "Entender quais canais levam pessoas aos formulários, documentos e páginas de projetos.",
-  "Apoiar campanhas de interesse público, como Google Ad Grants, sem coletar dados sensíveis.",
-  "Melhorar conteúdo, navegação, acessibilidade e prestação de contas.",
-];
-
-const measuredInteractions = [
-  "Envio do formulário de contato por e-mail.",
-  "Cliques em e-mail, telefone, redes sociais e chamadas de apoio.",
-  "Abertura ou download de documentos públicos em PDF.",
-  "Acesso a projetos em plataformas públicas de referência.",
+const serviceProviders = [
+  { title: "Vercel", text: "Hospedagem do site e recursos técnicos de desempenho e medição agregada." },
+  { title: "Cloudflare Turnstile", text: "Verificação de segurança para prevenir abuso no formulário de contato." },
+  { title: "Resend", text: "Encaminhamento da mensagem do formulário ao canal institucional de atendimento." },
+  {
+    title: "Google Analytics ou Tag Manager",
+    text: "Recursos opcionais que só são carregados quando estiverem configurados e houver aceite no aviso de cookies.",
+  },
 ];
 
 export default function PrivacyPage() {
@@ -74,20 +65,20 @@ export default function PrivacyPage() {
               Política de Privacidade do Instituto Incentive.
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-8 text-[var(--brand-muted)]">
-              Esta página apresenta, de forma objetiva, como o Instituto Incentive orienta o tratamento de informações
-              pessoais recebidas pelos canais institucionais e pelo site.
+              Esta política explica como o Instituto trata dados pessoais recebidos pelo site e pelos canais de contato
+              institucional.
             </p>
           </div>
 
           <div className="rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-6">
             <ShieldCheck className="text-[var(--brand-teal)]" size={32} />
-            <h2 className="mt-4 text-xl font-bold">Compromisso institucional</h2>
+            <h2 className="mt-4 text-xl font-bold">Controlador e canal de contato</h2>
             <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">
-              A proteção de dados acompanha os princípios de ética, transparência, respeito aos direitos humanos e
-              responsabilidade social que orientam a atuação do Instituto.
+              O controlador dos dados tratados pelo site é o {siteConfig.fullName}, CNPJ {siteConfig.cnpj}. Para
+              solicitações de privacidade, utilize o e-mail institucional indicado nesta página.
             </p>
             <p className="mt-4 inline-flex rounded-lg bg-[var(--brand-orange-soft)] px-3 py-2 text-xs font-bold uppercase text-[var(--brand-orange-dark)]">
-              Atualizada em 24 de junho de 2026
+              Vigente a partir de 10 de novembro de 2026
             </p>
           </div>
         </div>
@@ -107,21 +98,27 @@ export default function PrivacyPage() {
 
       <section className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[0.85fr_1.15fr]">
         <div>
-          <p className="text-sm font-semibold uppercase text-[var(--brand-orange-dark)]">Direitos do titular</p>
-          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-            Como solicitar informações ou correções.
-          </h2>
-          <p className="mt-4 text-base leading-8 text-[var(--brand-muted)]">
-            Pessoas que mantêm contato com o Instituto podem solicitar esclarecimentos sobre dados pessoais pelos canais
-            oficiais de atendimento.
-          </p>
+          <p className="text-sm font-semibold uppercase text-[var(--brand-orange-dark)]">Tratamento de dados</p>
+          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Quando e por que tratamos informações.</h2>
+          <div className="mt-4 grid gap-4 text-base leading-8 text-[var(--brand-muted)]">
+            <p>
+              O tratamento ocorre quando a pessoa preenche o formulário de contato, navega no site ou usa um canal
+              institucional divulgado pelo Instituto. A finalidade é responder à solicitação, proteger o serviço contra
+              uso indevido e aprimorar a comunicação institucional.
+            </p>
+            <p>
+              As mensagens do formulário são encaminhadas ao canal institucional de atendimento. O prazo de guarda é
+              definido conforme a finalidade do contato e eventuais obrigações legais ou de prestação de contas. A
+              política interna de retenção está em formalização pelo Instituto.
+            </p>
+          </div>
         </div>
 
         <div className="grid gap-3">
-          {rights.map((right) => (
-            <div key={right} className="flex gap-3 rounded-lg border border-[var(--brand-border)] bg-white p-4">
-              <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-teal)]" size={18} />
-              <p className="text-sm font-semibold leading-6 text-[var(--brand-text)]">{right}</p>
+          {serviceProviders.map((provider) => (
+            <div key={provider.title} className="rounded-lg border border-[var(--brand-border)] bg-white p-4">
+              <h3 className="text-sm font-bold text-[var(--brand-text)]">{provider.title}</h3>
+              <p className="mt-1 text-sm leading-6 text-[var(--brand-muted)]">{provider.text}</p>
             </div>
           ))}
         </div>
@@ -131,28 +128,24 @@ export default function PrivacyPage() {
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
             <p className="text-sm font-semibold uppercase text-[var(--brand-orange-dark)]">Cookies e medições</p>
-            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Como usamos dados de navegação.</h2>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Você decide sobre medições opcionais.</h2>
             <p className="mt-4 text-base leading-8 text-[var(--brand-muted)]">
-              O site utiliza recursos essenciais de funcionamento e medições agregadas para compreender o desempenho das
-              páginas. Ferramentas opcionais do Google Analytics ou Google Tag Manager só são carregadas após aceite do
-              visitante no aviso de privacidade.
+              O site mantém recursos técnicos necessários ao funcionamento e à segurança. Medições opcionais do Google
+              Analytics ou Google Tag Manager dependem de aceite no aviso de cookies e só são carregadas se estiverem
+              configuradas pelo Instituto.
             </p>
             <p className="mt-4 text-base leading-8 text-[var(--brand-muted)]">
-              O objetivo principal é melhorar a comunicação institucional, acompanhar campanhas de interesse público,
-              qualificar a experiência de navegação e ampliar o alcance das ações do Instituto.
+              Não utilizamos, neste portal, publicidade comportamental, rede de afiliados ou Google AdSense. Caso isso
+              mude, esta política e o aviso de cookies deverão ser revisados antes da ativação.
             </p>
           </div>
 
-          <div className="grid gap-3">
-            {cookieUses.map((item) => (
-              <div
-                key={item}
-                className="flex gap-3 rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-4"
-              >
-                <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-teal)]" size={18} />
-                <p className="text-sm font-semibold leading-6 text-[var(--brand-text)]">{item}</p>
-              </div>
-            ))}
+          <div className="rounded-lg border border-[var(--brand-border)] bg-[var(--brand-surface)] p-6">
+            <h3 className="text-lg font-bold">Como alterar sua escolha</h3>
+            <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">
+              A escolha é salva no navegador. Para alterar a decisão, limpe os dados de navegação deste site no seu
+              navegador e acesse novamente a página para visualizar o aviso de cookies.
+            </p>
           </div>
         </div>
       </section>
@@ -160,19 +153,19 @@ export default function PrivacyPage() {
       <section className="bg-[var(--brand-surface)]">
         <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[0.85fr_1.15fr]">
           <div>
-            <p className="text-sm font-semibold uppercase text-[var(--brand-orange-dark)]">Eventos de conversão</p>
-            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Quais interações podem ser medidas.</h2>
+            <p className="text-sm font-semibold uppercase text-[var(--brand-orange-dark)]">Direitos do titular</p>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Como solicitar informações ou correções.</h2>
             <p className="mt-4 text-base leading-8 text-[var(--brand-muted)]">
-              As medições opcionais ajudam o Instituto a avaliar se o site está cumprindo sua função pública: informar,
-              facilitar contato, apoiar campanhas de interesse social e melhorar a navegação.
+              O pedido deve ser enviado pelos canais oficiais. Poderemos solicitar informações adicionais para confirmar
+              a identidade da pessoa solicitante e proteger seus dados contra acesso indevido.
             </p>
           </div>
 
           <div className="grid gap-3">
-            {measuredInteractions.map((item) => (
-              <div key={item} className="flex gap-3 rounded-lg border border-[var(--brand-border)] bg-white p-4">
+            {rights.map((right) => (
+              <div key={right} className="flex gap-3 rounded-lg border border-[var(--brand-border)] bg-white p-4">
                 <CheckCircle2 className="mt-0.5 shrink-0 text-[var(--brand-teal)]" size={18} />
-                <p className="text-sm font-semibold leading-6 text-[var(--brand-text)]">{item}</p>
+                <p className="text-sm font-semibold leading-6 text-[var(--brand-text)]">{right}</p>
               </div>
             ))}
           </div>
@@ -185,13 +178,10 @@ export default function PrivacyPage() {
             <FileText className="text-[var(--brand-teal)]" size={28} />
             <h2 className="mt-4 text-xl font-bold">Documentos públicos</h2>
             <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">
-              Informações de transparência, certificações e documentos institucionais são publicadas para consulta
-              pública quando sua divulgação é necessária ou adequada à finalidade institucional.
+              A divulgação de documentos institucionais passa por revisão de finalidade e privacidade. Consulte o Portal
+              da Transparência para acessar informações públicas do Instituto.
             </p>
-            <Link
-              href="/transparencia"
-              className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[var(--brand-teal)] transition hover:text-[var(--brand-teal-dark)]"
-            >
+            <Link href="/transparencia" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[var(--brand-teal)] transition hover:text-[var(--brand-teal-dark)]">
               Ver Portal da Transparência
               <ArrowRight size={17} />
             </Link>
@@ -199,16 +189,13 @@ export default function PrivacyPage() {
 
           <div className="rounded-lg border border-[var(--brand-border)] bg-white p-6">
             <Mail className="text-[var(--brand-teal)]" size={28} />
-            <h2 className="mt-4 text-xl font-bold">Canal de contato</h2>
+            <h2 className="mt-4 text-xl font-bold">Solicitações de privacidade</h2>
             <p className="mt-3 text-sm leading-7 text-[var(--brand-muted)]">
-              Para dúvidas sobre privacidade, atualização de dados ou solicitações relacionadas aos canais
-              institucionais, utilize o e-mail oficial do Instituto.
+              Para dúvidas, atualização de dados ou exercício de direitos, escreva para o canal institucional de
+              atendimento com o assunto “Privacidade e proteção de dados”.
             </p>
-            <a
-              href="mailto:contato@institutoincentive.org.br?subject=Privacidade%20e%20prote%C3%A7%C3%A3o%20de%20dados"
-              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[var(--brand-teal)] px-4 py-3 text-sm font-bold text-white transition hover:bg-[var(--brand-teal-dark)]"
-            >
-              contato@institutoincentive.org.br
+            <a href={`mailto:${siteConfig.email}?subject=Privacidade%20e%20prote%C3%A7%C3%A3o%20de%20dados`} className="mt-5 inline-flex items-center gap-2 rounded-lg bg-[var(--brand-teal)] px-4 py-3 text-sm font-bold text-white transition hover:bg-[var(--brand-teal-dark)]">
+              {siteConfig.email}
               <ArrowRight size={17} />
             </a>
           </div>
